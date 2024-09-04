@@ -64,26 +64,22 @@
 </head>
 <body>
     <h1 style="text-align: center;">D15 Color Arrangement Test</h1>
-    <h2 style="text-align: center;">Blue-Green-Brown-Red</h2>
     <div id="testArea"></div>
     <h2 style="text-align: center;">Arrange the colors here:</h2>
     <div id="arrangementArea"></div>
     <button id="checkButton">Check Arrangement</button>
 
     <script>
-        const colors = [
-            "#0033cc", "#3399ff", "#8cc0ff", "#c4e0ff", 
-            "#d9f2d9", "#a8d5a2", "#66cc66", "#004d00", 
-            "#8b5a2b", "#c39c6c", "#e2c6a2", "#e5b5b5", 
-            "#f28d8d", "#d9534f", "#a23c29"
+        // สีชุดคำตอบที่ถูกต้องในแถวล่าง
+        const correctColors = [
+            "#3583B4", "#3B84A7", "#39859C", "#3B8690", 
+            "#3F8782", "#588473", "#6C8164", "#837B5D", 
+            "#907660", "#9E6E6F", "#9F6D7C", "#9C6D89", 
+            "#927099", "#8F6FA4", "#8073B2"
         ];
 
-        const correctColors = [
-            "#0033cc", "#3399ff", "#8cc0ff", "#c4e0ff", 
-            "#d9f2d9", "#a8d5a2", "#66cc66", "#004d00", 
-            "#8b5a2b", "#c39c6c", "#e2c6a2", "#e5b5b5", 
-            "#f28d8d", "#d9534f", "#a23c29"
-        ];
+        // ใช้สีชุดคำตอบเพื่อสุ่มใส่ในแถวบน
+        const colors = [...correctColors];
 
         const testArea = document.getElementById('testArea');
         const arrangementArea = document.getElementById('arrangementArea');
@@ -109,7 +105,14 @@
         }
 
         function createEmptyBoxes() {
-            // สร้างกล่องว่าง 15 กล่องในแถวล่าง
+            // เพิ่มกล่องแรกที่มีสี #3781C1 และป้องกันไม่ให้ลากหรือสลับตำแหน่ง
+            const firstDiv = document.createElement('div');
+            firstDiv.classList.add('colorBox');
+            firstDiv.style.backgroundColor = "#3781C1";
+            firstDiv.setAttribute('draggable', false);  // ล็อคไม่ให้ถูกลาก
+            arrangementArea.appendChild(firstDiv);
+
+            // สร้างกล่องว่าง 15 กล่องในแถวล่างที่เหลือ
             for (let i = 0; i < 15; i++) {
                 const div = document.createElement('div');
                 div.classList.add('emptyBox');
@@ -120,6 +123,7 @@
         }
 
         function rgbToHex(rgb) {
+            // แปลงค่า RGB เป็น Hex อย่างถูกต้อง
             const rgbArr = rgb.match(/\d+/g);
             const hex = rgbArr.map(num => {
                 const hex = parseInt(num).toString(16);
@@ -176,7 +180,8 @@
         }
 
         function checkArrangement() {
-            const boxes = arrangementArea.querySelectorAll('.colorBox');
+            // ข้ามกล่องแรกในการตรวจสอบการจัดเรียง
+            const boxes = arrangementArea.querySelectorAll('.colorBox:not(:first-child)'); // เริ่มตรวจสอบจากกล่องที่สอง
             let correct = true;
             let incorrectPositions = 0;
 
@@ -190,7 +195,7 @@
 
             // ตรวจสอบว่าการจัดเรียงสีตรงกับ correctColors หรือไม่
             arrangedColors.forEach((color, index) => {
-                if (color !== correctColors[index]) {
+                if (color.toUpperCase() !== correctColors[index].toUpperCase()) {  // ใช้ toUpperCase เพื่อให้แน่ใจว่าตรวจสอบได้ถูกต้อง
                     correct = false;
                     incorrectPositions++;
                 }
